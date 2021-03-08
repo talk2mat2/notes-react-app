@@ -1,0 +1,3 @@
+exports.Colors = {
+  white: "#ffff",
+};

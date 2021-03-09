@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import MenuIcon from "@material-ui/icons/Menu";
+import { Link } from "react-router-dom";
 
 const Nav = styled.nav`
   background-color: white;
@@ -22,11 +23,19 @@ const Nav = styled.nav`
 `;
 
 const BigTextnav = styled.p`
-  font-size: 16px;
-  color: #696969;
-  font-weight: 500;
+  font-size: 14px;
+  color: #686868;
+  font-weight: 600;
+  height: 80px;
+
+  border-bottom: 3px solid white;
+
   @media (max-width: 1100px) {
     display: none;
+  }
+  &:hover {
+    color: green;
+    border-bottom-color: green;
   }
 
   display: flex;
@@ -92,7 +101,9 @@ const NavBar = () => {
       </Div>
       <Div>
         <MidTextnav>Help</MidTextnav>
-        <MidTextnav>Login </MidTextnav>
+        <MidTextnav>
+          <Link to="/Login">Login </Link>
+        </MidTextnav>
         <Buttons variant="outlined" color="secondary">
           Download
         </Buttons>

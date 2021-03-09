@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 const Footer = styled.footer`
   background-color: white;
   min-height: 200px;
-  width: 100vw;
+  // width: 80vw;
 
   display: flex;
   flex-direction: column;
@@ -35,7 +35,7 @@ const MidTextfoot = styled.p`
   }
 `;
 const SmallTextfoot = styled.p`
-  font-size: 10px;
+  font-size: 12px;
   color: grey;
   font-weight: 200;
 `;

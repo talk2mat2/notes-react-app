@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 // import { Colors } from "../themes";
 import Button from "@material-ui/core/Button";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
+import ClearIcon from "@material-ui/icons/Clear";
 
 const Nav = styled.nav`
   background-color: white;
@@ -56,6 +57,7 @@ const MidTextnav = styled.p`
     display: none;
   }
 `;
+
 const MenuIconDiv = styled.div`
   margin-right: 20px;
   @media (min-width: 1100px) {
@@ -69,13 +71,18 @@ const Div = styled.div`
   flex-direction: row;
   align-items: center;
 `;
-
+const ButtonsStyle = {
+  color: "green",
+  borderColor: "green",
+  width: "200px",
+  alignSelf: "center",
+};
 const Buttons = styled(Button)`
   && {
     color: green;
     border-color: green;
     &:focus {
-      background-color: blue;
+      background-color: white;
     }
     @media (max-width: 1100px) {
       display: none;
@@ -86,11 +93,98 @@ const Logo = styled.img`
   height: 50px;
   width: 200px;
 `;
+
+const SideNav = styled.div`
+  z-index: 3;
+  width: 300px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 20px;
+  position: absolute;
+  background-color: white;
+  right: 0;
+  top: 0;
+  animation: apper 1s ease;
+  animation-iteration-count: 1;
+  p {
+    font-size: 14px;
+    color: #686868;
+    font-weight: 600;
+    height: 80px;
+  }
+  @keyframes apper {
+    from {
+      opacity: 0;
+    }
+    to {
+      top: 1;
+    }
+  }
+`;
+
+const Filter = styled.div`
+  width: 100%;
+  height: 100vh;
+  background-color: grey;
+  position: absolute;
+  z-index: 1;
+  opacity: 0.6;
+  top: 0;
+  left: 0;
+`;
+const Listing = styled.ul`
+  display: flex;
+  margin: 0;
+  list-style-type: none;
+  padding: 0;
+
+  flex-direction: column;
+  align-items: flex-start;
+  width: 98%;
+  li {
+    display: flex;
+    font-size: 16px;
+    color: black;
+    padding: 10px;
+    // &:nth-child(1) {
+    //   font-size: 20px;
+    //   color: grey;
+    // }
+    // &:nth-child(2) {
+    //   font-size: 30px;
+    //   color: black;
+    //   font-weight: 600;
+    //   @media (max-width: 1100px) {
+    //     font-size: 30px;
+    //   }
+    // }
+    // &:nth-child(3) {
+    //   font-size: 20px;
+    //   color: grey;
+    //   font-weight: 500;
+    //   @media (max-width: 1100px) {
+    //     font-size: 20px;
+    //   }
+    // }
+  }
+`;
 const NavBar = () => {
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  const handleOpenSideBar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
+
   return (
     <Nav>
+      {sidebarVisible ? <Filter onClick={handleOpenSideBar} /> : null}
       <Div>
-        <Logo src="./logo.jpg" />
+        <Link to="/">
+          {" "}
+          <Logo src="./logo.jpg" />
+        </Link>
         <BigTextnav>WHY NOTES </BigTextnav>
         <BigTextnav>
           FEATURES <ArrowDropDownIcon size={14} />
@@ -104,13 +198,51 @@ const NavBar = () => {
         <MidTextnav>
           <Link to="/Login">Login </Link>
         </MidTextnav>
-        <Buttons variant="outlined" color="secondary">
+        <Buttons
+          style={{ ...ButtonsStyle, width: "100px" }}
+          variant="outlined"
+          color="secondary"
+        >
           Download
         </Buttons>
       </Div>
-      <MenuIconDiv>
+      <MenuIconDiv
+        onClick={() => {
+          handleOpenSideBar();
+        }}
+      >
         <MenuIcon sixe={25} />
       </MenuIconDiv>
+      {sidebarVisible ? (
+        <SideNav>
+          <ClearIcon
+            onClick={() => {
+              handleOpenSideBar();
+            }}
+            style={{ alignSelf: "flex-end", margin: "10px" }}
+            size={20}
+          />
+          <Listing>
+            <li>WHY NOTES</li>
+            <li>
+              FEATURES <ArrowDropDownIcon size={14} />
+            </li>
+            <li>
+              PLANS <ArrowDropDownIcon size={14} />
+            </li>
+            <li>
+              PLANS <ArrowDropDownIcon size={14} />
+            </li>
+            <li> </li>
+          </Listing>
+          <br />
+          <br />
+          <br />
+          <Button style={ButtonsStyle} variant="outlined" color="secondary">
+            Download
+          </Button>
+        </SideNav>
+      ) : null}
     </Nav>
   );
 };

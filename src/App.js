@@ -39,9 +39,8 @@ function App() {
         <Route exact path="/plans">
           <Plans />
         </Route>
-        <Route exact path="/Login">
-          <Login />
-        </Route>
+        <Route path="/Login" render={(props) => <Login {...props} />} />
+
         <Route path="/dashboard">
           <Dashboard />
         </Route>

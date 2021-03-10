@@ -2,7 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { Link } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Link,
+  // useRouteMatch,
+  useLocation,
+  // useParams
+} from "react-router-dom";
 
 const Container = styled.div`
   //   background-color: #afeeee;
@@ -28,6 +35,7 @@ const TextFields = styled(TextField)`
     width: 300px;
     height: 100px;
     &:focus {
+      border-color: green;
     }
   }
 `;
@@ -40,6 +48,7 @@ const LoginCard = styled.div`
   text-align: center;
   box-sizing: border-box;
   padding: 10px;
+  padding-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,7 +77,7 @@ const SmallTextnav2 = styled.p`
 `;
 const SmallText2 = styled.p`
   font-size: 13px;
-  color: silver;
+  color: grey;
 
 
   }
@@ -82,7 +91,34 @@ align-items:center;
   }
 `;
 
-const Login = () => {
+const LoginScreen = () => {
+  return (
+    <TextFields
+      style
+      id="outlined-basic"
+      label="Enter email or username"
+      variant="outlined"
+    />
+  );
+};
+const SignUpScreen = () => {
+  return (
+    <>
+      <TextFields style id="outlined-basic" label="Email" variant="outlined" />
+      <TextFields
+        style
+        id="outlined-basic"
+        label="Password"
+        variant="outlined"
+      />
+    </>
+  );
+};
+
+const Login = (props) => {
+  const { match, history } = props;
+  const location = useLocation();
+
   return (
     <Container>
       <LoginCard>
@@ -103,12 +139,15 @@ const Login = () => {
           <SmallTextnav2 style={{ color: "silver" }}>or</SmallTextnav2>
           <Line />
         </Breaker>
-        <TextFields
-          style
-          id="outlined-basic"
-          label="Enter email or username"
-          variant="outlined"
-        />
+
+        <Switch>
+          <Route exact path={match.url}>
+            <LoginScreen />
+          </Route>
+          <Route path={`${match.url}/signup`}>
+            <SignUpScreen />
+          </Route>
+        </Switch>
         <Button
           variant="contained"
           color="primary"
@@ -120,8 +159,20 @@ const Login = () => {
           <SmallText2>Remember me</SmallText2>
         </div>
         <div>
-          <SmallText2>dont have account?</SmallText2>
-          <SmallText2>Create account</SmallText2>
+          <SmallText2>
+            {location.pathname === match.url ? (
+              <>
+                {" "}
+                <SmallText2>dont have account?</SmallText2>
+                <Link to={`${match.url}/signup`}>Create account</Link>
+              </>
+            ) : (
+              <>
+                <SmallText2>Already have an account?</SmallText2>
+                <Link to={`${match.url}`}>Sign In</Link>
+              </>
+            )}
+          </SmallText2>
         </div>
       </LoginCard>
     </Container>

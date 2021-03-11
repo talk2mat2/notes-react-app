@@ -5,11 +5,15 @@ import Footers from "./components/pages/footer";
 import { createGlobalStyle } from "styled-components";
 import Home from "./components/pages/home";
 import Login from "./components/pages/login";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import SideBar from "./components/pages/SideBar";
 import Plans from "./components/pages/plans";
+import Error404 from "./components/pages/404";
+import { useEffect } from "react";
+import { HistoryTwoTone } from "@material-ui/icons";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -29,20 +33,28 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+  const history = useHistory();
+  const CurrentUser = useSelector((state) => state.user.currentUser);
+  const userdata = CurrentUser && CurrentUser.userdata;
+
   return (
     <Router>
       <GlobalStyle />
       <Switch>
         <Route exact path="/">
-          <Home />
+          {CurrentUser ? <Dashboard /> : <Home />}
         </Route>
+
         <Route exact path="/plans">
           <Plans />
         </Route>
         <Route path="/Login" render={(props) => <Login {...props} />} />
 
-        <Route path="/dashboard">
+        {/* <Route path="/dashboard">
           <Dashboard />
+        </Route> */}
+        <Route>
+          <Error404 />
         </Route>
       </Switch>
     </Router>

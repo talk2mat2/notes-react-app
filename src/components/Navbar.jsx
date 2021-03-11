@@ -36,7 +36,8 @@ const BigTextnav = styled.p`
   }
   &:hover {
     color: green;
-    border-bottom-color: green;
+
+    border-bottom: 3px solid green;
   }
 
   display: flex;
@@ -146,6 +147,8 @@ const Listing = styled.ul`
   li {
     display: flex;
     font-size: 16px;
+    border-bottom: 0.1px solid silver;
+    width: 100%;
     color: black;
     padding: 10px;
     // &:nth-child(1) {
@@ -233,11 +236,14 @@ const NavBar = () => {
             <li>
               PLANS <ArrowDropDownIcon size={14} />
             </li>
-            <li> </li>
           </Listing>
           <br />
           <br />
           <br />
+          <br />
+          <br />
+          <br />
+
           <Button style={ButtonsStyle} variant="outlined" color="secondary">
             Download
           </Button>

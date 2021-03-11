@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import { useDispatch, useSelector } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { LOGINSUCCESS } from "../../redux/action";
+import { useHistory } from "react-router-dom";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import axios from "axios";
 import {
   Switch,
   Route,
@@ -91,29 +98,238 @@ align-items:center;
   }
 `;
 
-const LoginScreen = () => {
-  return (
-    <TextFields
-      style
-      id="outlined-basic"
-      label="Enter email or username"
-      variant="outlined"
-    />
-  );
-};
-const SignUpScreen = () => {
+const LoginScreen = (props) => {
+  const [isRegistered, setIsregistered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const dispatch = useDispatch();
+  const history = useHistory();
+  // error: true,
+
+  const handleCheckIsRegistered = (values) => {
+    setIsLoading(true);
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/users/CheckIsRegistered`, values)
+      .then((res) => {
+        setIsLoading(false);
+        console.log(res.data);
+        setErrorMessage("");
+        setIsregistered(true);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        if (err.response) {
+          console.log(err.response.data.message);
+          err.response.data.message &&
+            setErrorMessage(err.response.data.message);
+          err.response.data.error && setIsregistered(false);
+        }
+        console.log(err);
+      });
+  };
+  const handleLogin = (values) => {
+    setIsLoading(true);
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/users/Login`, values)
+      .then((res) => {
+        setIsLoading(false);
+        console.log(res.data);
+        setIsregistered(true);
+        history.push("/");
+        dispatch(LOGINSUCCESS(res.data));
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        if (err.response) {
+          console.log(err.response.data.message);
+          err.response.data.message &&
+            setErrorMessage(err.response.data.message);
+          err.response.data.error && setIsregistered(false);
+        }
+        console.log(err);
+      });
+  };
+  const Loginformik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: LoginValidateschema,
+    onSubmit: (values) => {
+      !Loginformik.values.password && handleCheckIsRegistered(values);
+      Loginformik.values.password && handleLogin(values);
+      // alert(JSON.stringify(values, null, 2));
+    },
+  });
+
   return (
     <>
-      <TextFields style id="outlined-basic" label="Email" variant="outlined" />
       <TextFields
         style
-        id="outlined-basic"
-        label="Password"
+        id="email"
+        label="Enter email or username"
+        value={Loginformik.values.email}
         variant="outlined"
+        onChange={Loginformik.handleChange}
+        error={Loginformik.touched.email && Boolean(Loginformik.errors.email)}
+        helperText={Loginformik.touched.email && Loginformik.errors.email}
       />
+      {isRegistered ? (
+        <TextFields
+          style
+          id="password"
+          type="password"
+          label="password"
+          value={Loginformik.values.password}
+          variant="outlined"
+          onChange={Loginformik.handleChange}
+          // error={Loginformik.touched.password && Boolean(Loginformik.errors.email)}
+          helperText={
+            Loginformik.touched.password && Loginformik.errors.password
+          }
+        />
+      ) : null}
+      {errorMessage && (
+        <small style={{ color: "red", fontSize: "13px", marginBottom: "10px" }}>
+          {errorMessage}
+        </small>
+      )}
+      <Button
+        onClick={Loginformik.handleSubmit}
+        variant="contained"
+        color="primary"
+        style={{ backgroundColor: "green", width: "300px", height: "50px" }}
+      >
+        {isLoading ? (
+          <CircularProgress
+            size={20}
+            color="primary"
+            style={{ color: "white" }}
+          />
+        ) : isRegistered ? (
+          "login"
+        ) : (
+          "Continue"
+        )}
+      </Button>
     </>
   );
 };
+const SignUpScreen = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const Signupformik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: SignuPValidateschema,
+    onSubmit: (values) => {
+      setIsLoading(true);
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/users/Register`, values)
+        .then((res) => {
+          setIsLoading(false);
+          console.log(res.data);
+          history.push("/");
+          dispatch(LOGINSUCCESS(res.data));
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          if (err.response) {
+            console.log(err.response.data.message);
+            err.response.data.message &&
+              setErrorMessage(err.response.data.message);
+          }
+          console.log(err);
+        });
+      // !Loginformik.values.password && handleCheckIsRegistered(values);
+      // Loginformik.values.password && handleLogin(values);
+      // // alert(JSON.stringify(values, null, 2));
+    },
+  });
+  return (
+    <>
+      <TextFields
+        style
+        id="email"
+        label="Email"
+        value={Signupformik.values.email}
+        variant="outlined"
+        onChange={Signupformik.handleChange}
+        error={Signupformik.touched.email && Boolean(Signupformik.errors.email)}
+        helperText={Signupformik.touched.email && Signupformik.errors.email}
+      />
+      <TextFields
+        style
+        id="password"
+        type="password"
+        label="password"
+        value={Signupformik.values.password}
+        variant="outlined"
+        onChange={Signupformik.handleChange}
+        error={
+          Signupformik.touched.password && Boolean(Signupformik.errors.password)
+        }
+        helperText={
+          Signupformik.touched.password && Signupformik.errors.password
+        }
+      />{" "}
+      {errorMessage && (
+        <small style={{ color: "red", fontSize: "13px", marginBottom: "10px" }}>
+          {errorMessage}
+        </small>
+      )}
+      <Button
+        onClick={Signupformik.handleSubmit}
+        variant="contained"
+        color="primary"
+        style={{ backgroundColor: "green", width: "300px", height: "50px" }}
+      >
+        {isLoading ? (
+          <CircularProgress
+            size={20}
+            color="primary"
+            style={{ color: "white" }}
+          />
+        ) : (
+          "Sign up now"
+        )}
+      </Button>
+    </>
+  );
+};
+
+var LoginValidateschema = yup.object().shape({
+  email: yup
+    .string("pls enter an email")
+    .email("pls enter a valid email")
+    .required("email is reqired"),
+  // password: yup
+  //   .string("enter a password")
+  //   .lowercase()
+  //   .min(6, "should be higher than 5 letters")
+  //   .required(),
+  // createdOn: yup.date().default(function () {
+  //   return new Date();
+  // }),
+});
+var SignuPValidateschema = yup.object().shape({
+  email: yup
+    .string("pls enter an email")
+    .email("pls enter a valid email")
+    .required("email is reqired"),
+  password: yup
+    .string("enter a password")
+    .lowercase()
+    .min(6, "should be higher than 5 letters")
+    .required("password is required"),
+  // createdOn: yup.date().default(function () {
+  //   return new Date();
+  // }),
+});
 
 const Login = (props) => {
   const { match, history } = props;
@@ -148,13 +364,7 @@ const Login = (props) => {
             <SignUpScreen />
           </Route>
         </Switch>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ backgroundColor: "green", width: "300px", height: "50px" }}
-        >
-          Sign Up Now
-        </Button>
+
         <div style={{ marginTop: "30px" }}>
           <SmallText2>Remember me</SmallText2>
         </div>

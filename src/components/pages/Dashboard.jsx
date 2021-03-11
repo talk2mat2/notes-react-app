@@ -12,9 +12,12 @@ import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import InfoIcon from "@material-ui/icons/Info";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { useDispatch, useSelector } from "react-redux";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import Button from "@material-ui/core/Button";
+import { LOGINOUTUSER } from "../../redux/action";
 import SettingsIcon from "@material-ui/icons/Settings";
+
 const Container = styled.div``;
 const SideMenu = styled.div`
   height: 100vh;
@@ -188,10 +191,17 @@ const UserMenu = styled.div`
 
 const Dashboard = () => {
   const [UserMenuVisible, setUserMenuVisible] = useState(false);
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const userdata =
+    (currentUser && currentUser.token && currentUser.userdata) || {};
+
   const handleUserMenuVisible = () => {
     setUserMenuVisible(!UserMenuVisible);
   };
-
+  const handleLogout = () => {
+    dispatch(LOGINOUTUSER());
+  };
   return (
     <MainContainer>
       <SideMenu>
@@ -256,7 +266,7 @@ const Dashboard = () => {
               <p> Explore upgrade options</p>
             </Button>
             <Logo src="logo.jpg" />
-            <MidTextnav>microsfot1234@gmail.com</MidTextnav>
+            <MidTextnav>{userdata.Email}</MidTextnav>
             <UserListing>
               <li>
                 <SettingsIcon fontSize="small" size={12} />
@@ -266,7 +276,7 @@ const Dashboard = () => {
                 <PowerSettingsNewIcon fontSize="small" size={12} /> lorem
               </li>
               <li>lorem</li>
-              <li>
+              <li onClick={handleLogout}>
                 <PowerSettingsNewIcon fontSize="small" size={12} />
                 logout
               </li>

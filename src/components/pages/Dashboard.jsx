@@ -189,6 +189,50 @@ const UserMenu = styled.div`
   }
 `;
 
+const NotecardCaontainer = styled.div`
+  width: 100%;
+  height: 70px;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px;
+
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #008080;
+
+    * {
+      color: white;
+    }
+  }
+`;
+const NoteCard = () => {
+  return (
+    <NotecardCaontainer>
+      <div>
+        <BigTextnav>title</BigTextnav>
+      </div>
+      <IconDivsHeader>
+        <AccessAlarmIcon
+          fontSize="small"
+          size={10}
+          style={{ color: "white" }}
+        />
+
+        <StarBorderIcon fontSize="small" size={14} style={{ color: "white" }} />
+
+        <InfoIcon fontSize="small" size={14} style={{ color: "white" }} />
+        <DeleteIcon fontSize="small" size={14} style={{ color: "white" }} />
+      </IconDivsHeader>
+      <div></div>
+    </NotecardCaontainer>
+  );
+};
+
 const Dashboard = () => {
   const [UserMenuVisible, setUserMenuVisible] = useState(false);
   const dispatch = useDispatch();
@@ -202,6 +246,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     dispatch(LOGINOUTUSER());
   };
+
   return (
     <MainContainer>
       <SideMenu>
@@ -290,65 +335,13 @@ const Dashboard = () => {
         </NoteHeader>
         <NoteBody>
           <Listing>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-            <li>jjkkk</li>
-
-            <li>jjkkk</li>
+            <NoteCard />
+            <NoteCard />
+            <NoteCard />
+            <NoteCard />
+            <NoteCard />
+            <NoteCard />
+            <NoteCard />
           </Listing>
         </NoteBody>
       </NoteSection>

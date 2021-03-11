@@ -7,6 +7,7 @@ import BusinessIcon from "@material-ui/icons/Business";
 import CheckIcon from "@material-ui/icons/Check";
 import StarIcon from "@material-ui/icons/Star";
 import FlareIcon from "@material-ui/icons/Flare";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   min-height: 300px;
@@ -138,10 +139,15 @@ const Plans = () => {
                 <CheckIcon size={15} /> great notes"Lorem{" "}
               </li>
             </Listing>
-
-            <Buttons variant="outlined" color="primary">
-              Get started
-            </Buttons>
+            <Link to="/login/signup">
+              <Buttons
+                variant="outlined"
+                color="primary "
+                style={{ backgroundColor: "white", color: "green" }}
+              >
+                Get started
+              </Buttons>
+            </Link>
           </Flexcards>
           <Flexcards>
             <Listing>
@@ -177,13 +183,16 @@ const Plans = () => {
                 <CheckIcon size={15} /> great notes"Lorem{" "}
               </li>
             </Listing>
-            <Buttons
-              variant="outlined"
-              color="primary"
-              style={{ backgroundColor: "green", color: "white" }}
-            >
-              Get started
-            </Buttons>
+            <Link to="/login/signup">
+              <Buttons
+                variant="outlined"
+                color="primary "
+                style={{ backgroundColor: "green", color: "white" }}
+              >
+                {" "}
+                Get started
+              </Buttons>
+            </Link>
           </Flexcards>
           <Flexcards>
             <Listing>
@@ -219,14 +228,17 @@ const Plans = () => {
                 <CheckIcon size={15} /> great notes"Lorem{" "}
               </li>
             </Listing>
-            <Buttons
-              variant="outlined"
-              color="primary "
-              style={{ backgroundColor: "green", color: "white" }}
-            >
-              {" "}
-              Get started
-            </Buttons>
+
+            <Link to="/login/signup">
+              <Buttons
+                variant="outlined"
+                color="primary "
+                style={{ backgroundColor: "green", color: "white" }}
+              >
+                {" "}
+                Get started
+              </Buttons>
+            </Link>
           </Flexcards>
         </PlansSection>
       </Container>

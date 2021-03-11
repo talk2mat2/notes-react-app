@@ -113,12 +113,18 @@ const NoteSection = styled.div`
   height: 100vh;
   width: 300px;
   // background-color: tomato;
-  border: 0.2px solid #f1f0f0; ;
+  border: 0.2px solid #f1f0f0;
+  @media (max-width: 1100px) {
+    width: 80px;
+  }
 `;
 const NoteEditSection = styled.div`
   min-height: 100vh;
   width: calc(100% - 370px);
   background-color: white;
+  @media (max-width: 1100px) {
+    width: calc(100% - 150px);
+  }
 `;
 
 const EditNoteHeader = styled.div`

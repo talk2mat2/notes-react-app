@@ -108,6 +108,7 @@ const LoginScreen = (props) => {
 
   const handleCheckIsRegistered = (values) => {
     setIsLoading(true);
+    console.log(process.env);
     axios
       .post(`${process.env.REACT_APP_API_URL}/users/CheckIsRegistered`, values)
       .then((res) => {
@@ -339,7 +340,7 @@ const Login = (props) => {
     <Container>
       <LoginCard>
         <Link to="/">
-          <Logo src="logo.jpg" />
+          <Logo src="/logo.jpg" />
         </Link>
         <SmallTextnav2>Capture your memorable moments</SmallTextnav2>
         <Buttons variant="outlined" color="secondary">

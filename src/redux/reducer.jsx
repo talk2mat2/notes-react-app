@@ -18,3 +18,12 @@ export const UserReducers = (state = init_state, action) => {
     }
   }
 };
+
+const notes_initstate = { userNotes: null };
+export const NotesReducer = (state = notes_initstate, action) => {
+  if (action.type === Action_types.GETUSERNOTESSUCCESS) {
+    return { ...state, userNotes: action.payload };
+  } else {
+    return state;
+  }
+};

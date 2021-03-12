@@ -18,3 +18,10 @@ export const SYNCUSERDATA = (userData) => {
     payload: userData,
   };
 };
+
+export const GETUSERNOTESSUCCESS = (userNotes) => {
+  return {
+    type: acttiontypes.GETUSERNOTESSUCCESS,
+    payload: userNotes,
+  };
+};

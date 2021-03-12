@@ -1,10 +1,11 @@
 import { createStore, combineReducers } from "redux";
-import { UserReducers } from "./reducer";
+import { UserReducers, NotesReducer } from "./reducer";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for our  web app
 
 const rootReducer = combineReducers({
   user: UserReducers,
+  notes: NotesReducer,
 });
 const authPersistConfig = {
   key: "root",

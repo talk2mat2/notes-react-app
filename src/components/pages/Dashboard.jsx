@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import SearchIcon from "@material-ui/icons/Search";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import PostAddIcon from "@material-ui/icons/PostAdd";
@@ -15,8 +16,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import Button from "@material-ui/core/Button";
-import { LOGINOUTUSER } from "../../redux/action";
+import { LOGINOUTUSER, GETUSERNOTESSUCCESS } from "../../redux/action";
 import SettingsIcon from "@material-ui/icons/Settings";
+import DraftPage from "./DraftPage";
 
 const Container = styled.div``;
 const SideMenu = styled.div`
@@ -216,11 +218,15 @@ const NotecardCaontainer = styled.div`
     }
   }
 `;
-const NoteCard = () => {
+const NoteCard = (props) => {
+  const { notes } = props;
+  const TextPreview = JSON.parse(notes.rawContent);
+  const textprev = TextPreview.blocks[0].text.slice(0, 10);
   return (
     <NotecardCaontainer>
       <div>
-        <BigTextnav>title</BigTextnav>
+        <BigTextnav>{notes.title}</BigTextnav>
+        <BigTextnav STYLE={{ fontSize: "14px" }}>{textprev}</BigTextnav>
       </div>
       <IconDivsHeader>
         <AccessAlarmIcon
@@ -243,6 +249,9 @@ const Dashboard = () => {
   const [UserMenuVisible, setUserMenuVisible] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
+
+  const token = currentUser && currentUser.token;
+  const UserNotes = useSelector((state) => state.notes.userNotes);
   const userdata =
     (currentUser && currentUser.token && currentUser.userdata) || {};
 
@@ -251,6 +260,39 @@ const Dashboard = () => {
   };
   const handleLogout = () => {
     dispatch(LOGINOUTUSER());
+  };
+
+  const GetUserNotes = () => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/notes/getUserNotes`,
+
+        { headers: { authorization: token } }
+      )
+      .then((res) => {
+        console.log(res.data.notesData);
+        dispatch(GETUSERNOTESSUCCESS(res.data.notesData));
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.log(err.response.data.message);
+        }
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    GetUserNotes();
+  }, []);
+
+  const MapUserNotes = () => {
+    return (
+      UserNotes &&
+      UserNotes.length > 0 &&
+      UserNotes.map((note) => {
+        return <NoteCard notes={note} key={note._id} />;
+      })
+    );
   };
 
   return (
@@ -338,16 +380,18 @@ const Dashboard = () => {
       <NoteSection>
         <NoteHeader>
           <BigTextnav>NOTES</BigTextnav>
+          <BigTextnav>{UserNotes && UserNotes.length} notes</BigTextnav>
         </NoteHeader>
         <NoteBody>
           <Listing>
+            {/* <NoteCard />
             <NoteCard />
             <NoteCard />
             <NoteCard />
             <NoteCard />
-            <NoteCard />
-            <NoteCard />
-            <NoteCard />
+            <NoteCard /> */}
+
+            {MapUserNotes()}
           </Listing>
         </NoteBody>
       </NoteSection>
@@ -365,6 +409,7 @@ const Dashboard = () => {
             <AccessAlarmIcon size={20} />
           </IconDivsHeader>
         </EditNoteHeader>
+        <DraftPage />
       </NoteEditSection>
     </MainContainer>
   );

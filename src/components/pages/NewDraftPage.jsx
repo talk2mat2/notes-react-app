@@ -11,6 +11,7 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import InfoIcon from "@material-ui/icons/Info";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 
 const Container = styled.div`
@@ -54,10 +55,11 @@ const IconDivsHeader = styled.div`
   }
 `;
 
-const DraftPage = (props) => {
+const NewDraftPage = (props) => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
-  const [title, setTitle] = useState("");
+  const [titles, setTitles] = useState("");
+  const [saving, setSaving] = useState(false);
   const token = currentUser && currentUser.token;
   const [state, setState] = useState({
     editorState: EditorState.createEmpty(),
@@ -70,10 +72,11 @@ const DraftPage = (props) => {
   };
 
   const HandleSaveNote = () => {
+    setSaving(true);
     const contentState = state.editorState.getCurrentContent();
     const rawContent = JSON.stringify(convertToRaw(contentState));
     console.log(rawContent);
-    const title = "" || "untitled";
+    const title = titles || "untitled";
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/notes/saveNotes`,
@@ -82,9 +85,12 @@ const DraftPage = (props) => {
       )
       .then((res) => {
         console.log(res.data);
+        setSaving(false);
+        props.savedSuccess();
         dispatch(GETUSERNOTESSUCCESS(res.data.notesData));
       })
       .catch((err) => {
+        setSaving(false);
         if (err.response) {
           console.log(err.response.data.message);
         }
@@ -103,17 +109,17 @@ const DraftPage = (props) => {
   //   const rawContent = /* get this value from db */;
 
   //   const editorState = EditorState.createWithContent(blocks);
-  const { notes } = props;
-  useEffect(() => {
-    console.log(notes);
-    const contentState = convertFromRaw(JSON.parse(notes.rawContent));
-    console.log(contentState);
-    const editorState = EditorState.createWithContent(contentState);
-    setState({
-      editorState,
-    });
-    setTitle(notes.title);
-  }, [notes]);
+  // const { notes } = props;
+  // useEffect(() => {
+  //   console.log(notes);
+  //   const contentState = convertFromRaw(JSON.parse(notes.rawContent));
+  //   console.log(contentState);
+  //   const editorState = EditorState.createWithContent(contentState);
+  //   setState({
+  //     editorState,
+  //   });
+  //   setTitle(notes.title);
+  // }, [notes]);
   return (
     <Container>
       <EditNoteHeader>
@@ -134,7 +140,7 @@ const DraftPage = (props) => {
             }}
             onClick={() => HandleSaveNote()}
           >
-            update
+            save
           </button>
           <button
             onClick={() => {
@@ -146,17 +152,37 @@ const DraftPage = (props) => {
           <AccessAlarmIcon size={20} />
         </IconDivsHeader>
       </EditNoteHeader>
-      <Title placeholder="Title of your note" defaultValue={title} />
-      <Editor
-        editorState={state.editorState}
-        toolbarClassName="toolbarClassName"
-        wrapperClassName="wrapperClassName"
-        editorClassName="editorClassName"
-        onEditorStateChange={onEditorStateChange}
-      />
+      {saving ? (
+        <div style={{ textAlign: "center", alignSelf: "center" }}>
+          {" "}
+          <CircularProgress
+            size={80}
+            color="primary"
+            style={{ color: "#008080" }}
+          />
+          <p>saving...</p>
+        </div>
+      ) : (
+        <>
+          <Title
+            placeholder="Title of your note"
+            value={titles}
+            onChange={(e) => {
+              setTitles(e.target.value);
+            }}
+          />
+          <Editor
+            editorState={state.editorState}
+            toolbarClassName="toolbarClassName"
+            wrapperClassName="wrapperClassName"
+            editorClassName="editorClassName"
+            onEditorStateChange={onEditorStateChange}
+          />
+        </>
+      )}
       ;
     </Container>
   );
 };
 
-export default DraftPage;
+export default NewDraftPage;

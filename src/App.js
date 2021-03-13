@@ -41,14 +41,25 @@ function App() {
     <Router>
       <GlobalStyle />
       <Switch>
-        <Route exact path="/">
-          {CurrentUser ? <Dashboard /> : <Home />}
-        </Route>
+        <Route
+          exact
+          path="/"
+          render={(props) =>
+            CurrentUser ? <Dashboard {...props} /> : <Home {...props} />
+          }
+        />
+        {/* {CurrentUser ? <Dashboard /> : <Home />}
+        </Route> */}
 
         <Route exact path="/plans">
           <Plans />
         </Route>
-        <Route path="/Login" render={(props) => <Login {...props} />} />
+        <Route
+          path="/Login"
+          render={(props) =>
+            CurrentUser ? <Dashboard {...props} /> : <Login {...props} />
+          }
+        />
 
         {/* <Route path="/dashboard">
           <Dashboard />

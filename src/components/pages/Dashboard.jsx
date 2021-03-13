@@ -19,6 +19,10 @@ import Button from "@material-ui/core/Button";
 import { LOGINOUTUSER, GETUSERNOTESSUCCESS } from "../../redux/action";
 import SettingsIcon from "@material-ui/icons/Settings";
 import DraftPage from "./DraftPage";
+import { Link, Switch, Route, useHistory } from "react-router-dom";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { HistoryOutlined } from "@material-ui/icons";
+import NewDraftPage from "./NewDraftPage";
 
 const Container = styled.div``;
 const SideMenu = styled.div`
@@ -27,6 +31,9 @@ const SideMenu = styled.div`
   width: 70px;
   position: fixed;
   left: 0;
+  @media (max-width: 1100px) {
+    width: 40px;
+  }
 `;
 
 const UserListing = styled.ul`
@@ -64,9 +71,11 @@ const Listing = styled.ul`
   width: 98%;
   li {
     display: flex;
+
     font-size: 16px;
     color: #008080;
     padding: 10px;
+    box-sizing: border-box;
     &:hover {
       background-color: #008080;
       color: white;
@@ -118,11 +127,16 @@ const NoteSection = styled.div`
   border: 0.2px solid #f1f0f0;
   @media (max-width: 1100px) {
     width: 80px;
+    margin-left: 40px;
   }
 `;
 const NoteEditSection = styled.div`
   min-height: 100vh;
-  width: calc(100% - 370px);
+  transition: all 1.5s ease;
+  // width: calc(100% - 370px);
+  width: auto;
+  margin-left: ${({ NotesectionsVisoble }) =>
+    NotesectionsVisoble ? null : "70px"};
   background-color: white;
   @media (max-width: 1100px) {
     width: calc(100% - 150px);
@@ -134,6 +148,7 @@ const EditNoteHeader = styled.div`
   height: 70px;
   background-color: white;
   display: flex;
+
   flex-direction: row;
   justify-content: space-between;
   border-bottom: 0.2px solid #f1f0f0;
@@ -176,6 +191,7 @@ const MidTextnav = styled.p`
 `;
 const UserMenu = styled.div`
   position: absolute;
+  z-index: 2;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -185,6 +201,7 @@ const UserMenu = styled.div`
   left: 70px;
   bottom: 4px;
   padding: 5px;
+
   box-sizing: border-box;
   animation: apper 1.4s ease;
   @keyframes apper {
@@ -195,40 +212,62 @@ const UserMenu = styled.div`
       top: 1;
     }
   }
+  @media (max-width: 1100px) {
+    width: 200px;
+  }
+  p {
+    font-size: 13px;
+    @media (max-width: 1100px) {
+      font-size: 10px;
+    }
+  }
 `;
 
 const NotecardCaontainer = styled.div`
   width: 100%;
-  height: 70px;
+  min-height: 50px;
   background-color: white;
   display: flex;
   flex-direction: row;
   width: 100%;
+  margin-bottom: 6px;
   justify-content: space-between;
   align-items: flex-start;
   padding: 10px;
 
+  p {
+    color: grey;
+  }
   box-sizing: border-box;
   transition: all 0.3s ease;
   &:hover {
     background-color: #008080;
-
+    padding: 10px;
     * {
       color: white;
     }
   }
 `;
 const NoteCard = (props) => {
-  const { notes } = props;
+  const { notes, handdleDetailsnotes, handleDeleteNotes } = props;
+
   const TextPreview = JSON.parse(notes.rawContent);
-  const textprev = TextPreview.blocks[0].text.slice(0, 10);
+  const textprev = TextPreview.blocks[0].text.slice(0, 16);
+  const handleDetails = () => {
+    handdleDetailsnotes(notes);
+  };
   return (
-    <NotecardCaontainer>
-      <div>
-        <BigTextnav>{notes.title}</BigTextnav>
-        <BigTextnav STYLE={{ fontSize: "14px" }}>{textprev}</BigTextnav>
+    <NotecardCaontainer style={{ position: "relative" }}>
+      <div
+        onClick={() => {
+          handleDetails();
+        }}
+        style={{ width: "100%" }}
+      >
+        <BigTextnav>{notes.title.slice(0, 16)}</BigTextnav>
+        <p style={{ fontSize: "14px" }}>{textprev}....</p>
       </div>
-      <IconDivsHeader>
+      <IconDivsHeader style={{ position: "absolute", top: 0, right: 0 }}>
         <AccessAlarmIcon
           fontSize="small"
           size={10}
@@ -238,15 +277,25 @@ const NoteCard = (props) => {
         <StarBorderIcon fontSize="small" size={14} style={{ color: "white" }} />
 
         <InfoIcon fontSize="small" size={14} style={{ color: "white" }} />
-        <DeleteIcon fontSize="small" size={14} style={{ color: "white" }} />
+        <DeleteIcon
+          onClick={handleDeleteNotes.bind(this, notes._id)}
+          fontSize="small"
+          size={14}
+          style={{ color: "white" }}
+        />
       </IconDivsHeader>
       <div></div>
     </NotecardCaontainer>
   );
 };
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   const [UserMenuVisible, setUserMenuVisible] = useState(false);
+  const [UserNoteLoading, setUserNoteLoading] = useState(false);
+  const [NotesectionsVisoble, setNotesectionsVisoble] = useState(true);
+  const [CurrentNoteDetails, setCurrentNoteDetails] = useState({
+    Component: <></>,
+  });
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -262,7 +311,31 @@ const Dashboard = () => {
     dispatch(LOGINOUTUSER());
   };
 
+  const handleDeleteNotes = (id) => {
+    setUserNoteLoading(true);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/notes/DeleteNote`,
+        { noteId: id },
+
+        { headers: { authorization: token } }
+      )
+      .then((res) => {
+        setUserNoteLoading(false);
+        console.log(res.data.notesData);
+        dispatch(GETUSERNOTESSUCCESS(res.data.notesData));
+      })
+      .catch((err) => {
+        // setUserNoteLoading(false);
+        if (err.response) {
+          console.log(err.response.data.message);
+        }
+        console.log(err);
+      });
+  };
+
   const GetUserNotes = () => {
+    setUserNoteLoading(true);
     axios
       .get(
         `${process.env.REACT_APP_API_URL}/notes/getUserNotes`,
@@ -272,8 +345,10 @@ const Dashboard = () => {
       .then((res) => {
         console.log(res.data.notesData);
         dispatch(GETUSERNOTESSUCCESS(res.data.notesData));
+        setUserNoteLoading(false);
       })
       .catch((err) => {
+        setUserNoteLoading(false);
         if (err.response) {
           console.log(err.response.data.message);
         }
@@ -284,13 +359,42 @@ const Dashboard = () => {
   useEffect(() => {
     GetUserNotes();
   }, []);
+  const handdleDetailsnotes = (notes) => {
+    setCurrentNoteDetails({
+      ...CurrentNoteDetails,
+      Component: <DraftPage notes={notes} />,
+    });
+  };
+
+  const savedSuccess = () => {
+    setNotesectionsVisoble(true);
+    setCurrentNoteDetails({
+      ...CurrentNoteDetails,
+      Component: null,
+    });
+  };
+
+  const handdleNewDraftPage = () => {
+    setNotesectionsVisoble(false);
+    setCurrentNoteDetails({
+      // ...CurrentNoteDetails,
+      Component: <NewDraftPage savedSuccess={savedSuccess} />,
+    });
+  };
 
   const MapUserNotes = () => {
     return (
       UserNotes &&
       UserNotes.length > 0 &&
       UserNotes.map((note) => {
-        return <NoteCard notes={note} key={note._id} />;
+        return (
+          <NoteCard
+            notes={note}
+            key={note._id}
+            handleDeleteNotes={handleDeleteNotes}
+            handdleDetailsnotes={handdleDetailsnotes}
+          />
+        );
       })
     );
   };
@@ -302,7 +406,7 @@ const Dashboard = () => {
           <li>
             <Logo src="logo.jpg" />
           </li>
-          <li>
+          <li onClick={handdleNewDraftPage}>
             {/* <AddCircleOutlineIcon */}
             <AddCircleOutlineIcon
               color="#008080"
@@ -377,39 +481,39 @@ const Dashboard = () => {
           </UserMenu>
         ) : null}
       </SideMenu>
-      <NoteSection>
-        <NoteHeader>
-          <BigTextnav>NOTES</BigTextnav>
-          <BigTextnav>{UserNotes && UserNotes.length} notes</BigTextnav>
-        </NoteHeader>
-        <NoteBody>
-          <Listing>
-            {/* <NoteCard />
+      {NotesectionsVisoble ? (
+        <NoteSection>
+          <NoteHeader>
+            <BigTextnav>NOTES</BigTextnav>
+            <BigTextnav>{UserNotes && UserNotes.length} notes</BigTextnav>
+          </NoteHeader>
+          <NoteBody>
+            <Listing>
+              {/* <NoteCard />
             <NoteCard />
             <NoteCard />
             <NoteCard />
             <NoteCard />
             <NoteCard /> */}
 
-            {MapUserNotes()}
-          </Listing>
-        </NoteBody>
-      </NoteSection>
-      <NoteEditSection>
-        <EditNoteHeader>
-          <IconDivsHeader>
-            <AccessAlarmIcon size={20} style={{ color: "grey" }} />
-
-            <StarBorderIcon size={20} style={{ color: "grey" }} />
-
-            <InfoIcon size={20} style={{ color: "grey" }} />
-            <DeleteIcon size={20} style={{ color: "grey" }} />
-          </IconDivsHeader>
-          <IconDivsHeader>
-            <AccessAlarmIcon size={20} />
-          </IconDivsHeader>
-        </EditNoteHeader>
-        <DraftPage />
+              {UserNoteLoading ? (
+                <div style={{ textAlign: "center" }}>
+                  <CircularProgress
+                    size={40}
+                    color="primary"
+                    style={{ color: "#008080" }}
+                  />
+                  <h4>fertching notes.....</h4>{" "}
+                </div>
+              ) : (
+                MapUserNotes()
+              )}
+            </Listing>
+          </NoteBody>
+        </NoteSection>
+      ) : null}
+      <NoteEditSection NotesectionsVisoble={NotesectionsVisoble}>
+        {CurrentNoteDetails.Component}
       </NoteEditSection>
     </MainContainer>
   );

@@ -29,15 +29,15 @@ const SideBarContainer = styled.div`
   align-items: center;
 `;
 
-{
-  /* <Button
-variant="contained"
-color="primary"
-style={{ backgroundColor: "green", width: "200px", height: "50px" }}
->
-Sign Up Now
-</Button> */
-}
+// {
+//   /* <Button
+// variant="contained"
+// color="primary"
+// style={{ backgroundColor: "green", width: "200px", height: "50px" }}
+// >
+// Sign Up Now
+// </Button> */
+// }
 
 const Input = styled.input`
   height: 30px;

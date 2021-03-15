@@ -13,7 +13,8 @@ import SideBar from "./components/pages/SideBar";
 import Plans from "./components/pages/plans";
 import Error404 from "./components/pages/404";
 import { useEffect } from "react";
-import { HistoryTwoTone } from "@material-ui/icons";
+
+import SettingsPage from "./components/pages/Settings";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -64,6 +65,9 @@ function App() {
         {/* <Route path="/dashboard">
           <Dashboard />
         </Route> */}
+        <Route path="/settings">
+          <SettingsPage />
+        </Route>
         <Route>
           <Error404 />
         </Route>

@@ -6,6 +6,8 @@ import PostAddIcon from "@material-ui/icons/PostAdd";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import StarIcon from "@material-ui/icons/Star";
+import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
+import Tooltip from "@material-ui/core/Tooltip";
 import NoteIcon from "@material-ui/icons/Note";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import styled from "styled-components";
@@ -13,6 +15,7 @@ import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import InfoIcon from "@material-ui/icons/Info";
 import DeleteIcon from "@material-ui/icons/Delete";
+import SearchPage from "./Search";
 import { useDispatch, useSelector } from "react-redux";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import Button from "@material-ui/core/Button";
@@ -21,8 +24,10 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import DraftPage from "./DraftPage";
 import { Link, Switch, Route, useHistory } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { HistoryOutlined } from "@material-ui/icons";
+// import { HistoryOutlined, Search } from "@material-ui/icons";
 import NewDraftPage from "./NewDraftPage";
+import AlertDialog from "../Dialog";
+import NewMeetingDraftPage from "./newMeetingDraftPage";
 
 const Container = styled.div``;
 const SideMenu = styled.div`
@@ -30,6 +35,7 @@ const SideMenu = styled.div`
   background-color: #f1f0f0;
   width: 70px;
   position: fixed;
+  z-index: 3;
   left: 0;
   @media (max-width: 1100px) {
     width: 40px;
@@ -134,7 +140,7 @@ const NoteEditSection = styled.div`
   min-height: 100vh;
   transition: all 1.5s ease;
   // width: calc(100% - 370px);
-  width: auto;
+  width: 100%;
   margin-left: ${({ NotesectionsVisoble }) =>
     NotesectionsVisoble ? null : "70px"};
   background-color: white;
@@ -216,9 +222,9 @@ const UserMenu = styled.div`
     width: 200px;
   }
   p {
-    font-size: 13px;
+    font-size: 11px;
     @media (max-width: 1100px) {
-      font-size: 10px;
+      font-size: 9px;
     }
   }
 `;
@@ -249,7 +255,12 @@ const NotecardCaontainer = styled.div`
   }
 `;
 const NoteCard = (props) => {
-  const { notes, handdleDetailsnotes, handleDeleteNotes } = props;
+  const {
+    notes,
+    handdleDetailsnotes,
+    handleDeleteNotes,
+    handleClickOpen,
+  } = props;
 
   const TextPreview = JSON.parse(notes.rawContent);
   const textprev = TextPreview.blocks[0].text.slice(0, 16);
@@ -264,8 +275,10 @@ const NoteCard = (props) => {
         }}
         style={{ width: "100%" }}
       >
-        <BigTextnav>{notes.title.slice(0, 16)}</BigTextnav>
-        <p style={{ fontSize: "14px" }}>{textprev}....</p>
+        <BigTextnav style={{ fontWeight: "550" }}>
+          {notes.title.slice(0, 16)}
+        </BigTextnav>
+        <p style={{ fontSize: "13px" }}>{textprev}....</p>
       </div>
       <IconDivsHeader style={{ position: "absolute", top: 0, right: 0 }}>
         <AccessAlarmIcon
@@ -278,7 +291,8 @@ const NoteCard = (props) => {
 
         <InfoIcon fontSize="small" size={14} style={{ color: "white" }} />
         <DeleteIcon
-          onClick={handleDeleteNotes.bind(this, notes._id)}
+          // onClick={handleDeleteNotes.bind(this, notes._id)}
+          onClick={handleClickOpen}
           fontSize="small"
           size={14}
           style={{ color: "white" }}
@@ -292,6 +306,8 @@ const NoteCard = (props) => {
 const Dashboard = (props) => {
   const [UserMenuVisible, setUserMenuVisible] = useState(false);
   const [UserNoteLoading, setUserNoteLoading] = useState(false);
+  const [DialogOpen, setDialogOpen] = useState(false);
+  const [deleteid, setdeleteid] = useState(null);
   const [NotesectionsVisoble, setNotesectionsVisoble] = useState(true);
   const [CurrentNoteDetails, setCurrentNoteDetails] = useState({
     Component: <></>,
@@ -311,7 +327,8 @@ const Dashboard = (props) => {
     dispatch(LOGINOUTUSER());
   };
 
-  const handleDeleteNotes = (id) => {
+  const handleDeleteNotes = () => {
+    const id = deleteid;
     setUserNoteLoading(true);
     axios
       .post(
@@ -324,6 +341,10 @@ const Dashboard = (props) => {
         setUserNoteLoading(false);
         console.log(res.data.notesData);
         dispatch(GETUSERNOTESSUCCESS(res.data.notesData));
+        setCurrentNoteDetails({
+          // ...CurrentNoteDetails,
+          Component: <></>,
+        });
       })
       .catch((err) => {
         // setUserNoteLoading(false);
@@ -361,15 +382,41 @@ const Dashboard = (props) => {
   }, []);
   const handdleDetailsnotes = (notes) => {
     setCurrentNoteDetails({
-      ...CurrentNoteDetails,
-      Component: <DraftPage notes={notes} />,
+      // ...CurrentNoteDetails,
+      Component: (
+        <DraftPage
+          notes={notes}
+          handleClickOpen={handleClickOpen}
+          NotesectionsVisoble={NotesectionsVisoble}
+          setNotesectionsVisoble={setNotesectionsVisoble}
+        />
+      ),
     });
+  };
+  const handleSearchNoteDetails = (note) => {
+    handdleDetailsnotes(note);
+  };
+
+  const handleSearchPage = () => {
+    setNotesectionsVisoble(false);
+    setCurrentNoteDetails({
+      Component: (
+        <SearchPage handleSearchNoteDetails={handleSearchNoteDetails} />
+      ),
+    });
+    // SearchIcon
   };
 
   const savedSuccess = () => {
     setNotesectionsVisoble(true);
     setCurrentNoteDetails({
-      ...CurrentNoteDetails,
+      Component: null,
+    });
+  };
+  const handleCancel = () => {
+    setNotesectionsVisoble(true);
+    setCurrentNoteDetails({
+      // ...CurrentNoteDetails,
       Component: null,
     });
   };
@@ -378,8 +425,21 @@ const Dashboard = (props) => {
     setNotesectionsVisoble(false);
     setCurrentNoteDetails({
       // ...CurrentNoteDetails,
-      Component: <NewDraftPage savedSuccess={savedSuccess} />,
+      Component: (
+        <NewDraftPage savedSuccess={savedSuccess} handleCancel={handleCancel} />
+      ),
     });
+  };
+  const handleNewMeetingNotes = () => {
+    setCurrentNoteDetails({
+      Component: (
+        <NewMeetingDraftPage
+          savedSuccess={savedSuccess}
+          handleCancel={handleCancel}
+        />
+      ),
+    });
+    // NewMeetingDraftPage
   };
 
   const MapUserNotes = () => {
@@ -391,6 +451,7 @@ const Dashboard = (props) => {
           <NoteCard
             notes={note}
             key={note._id}
+            handleClickOpen={handleClickOpen.bind(this, note._id)}
             handleDeleteNotes={handleDeleteNotes}
             handdleDetailsnotes={handdleDetailsnotes}
           />
@@ -399,26 +460,47 @@ const Dashboard = (props) => {
     );
   };
 
+  const handleClickOpen = (id) => {
+    setdeleteid(id);
+
+    setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
   return (
     <MainContainer>
+      <AlertDialog
+        handleDeleteNotes={handleDeleteNotes}
+        open={DialogOpen}
+        handleClose={handleClose}
+        handleClickOpen={handleClickOpen}
+      />
       <SideMenu>
         <Listing>
           <li>
-            <Logo src="logo.jpg" />
+            <Logo src="/logo192.png" />
           </li>
           <li onClick={handdleNewDraftPage}>
             {/* <AddCircleOutlineIcon */}
-            <AddCircleOutlineIcon
-              color="#008080"
-              fontSize="medium"
-              // style={{ color: "#008080" }}
-            />
+            <Tooltip title="NEW NOTE">
+              <AddCircleOutlineIcon
+                color="#008080"
+                fontSize="medium"
+                // style={{ color: "#008080" }}
+              />
+            </Tooltip>
           </li>
-          <li>
-            <PostAddIcon fontSize="medium" />
+          <li onClick={() => handleNewMeetingNotes()}>
+            <Tooltip title="NEW MEETING NOTES">
+              <PostAddIcon fontSize="medium" />
+            </Tooltip>
           </li>
-          <li>
-            <SearchIcon fontSize="medium" />
+          <li onClick={() => handleSearchPage()}>
+            <Tooltip title="SEARCH NOTES">
+              <SearchIcon fontSize="medium" />
+            </Tooltip>
           </li>
           <li>
             <RateReviewIcon fontSize="medium" />
@@ -428,10 +510,14 @@ const Dashboard = (props) => {
           <br />
           <br />
           <li>
-            <StarIcon fontSize="medium" />
+            <Tooltip title="SHORTCUTS">
+              <StarIcon fontSize="medium" />
+            </Tooltip>
           </li>
-          <li>
-            <NoteIcon fontSize="medium" />
+          <li onClick={() => setNotesectionsVisoble(true)}>
+            <Tooltip title="NOTES">
+              <NoteIcon fontSize="medium" />
+            </Tooltip>
           </li>
           <li>
             <MenuBookIcon fontSize="medium" />
@@ -445,11 +531,13 @@ const Dashboard = (props) => {
               handleUserMenuVisible();
             }}
           >
-            <Logo src="logo.jpg" />
+            <Tooltip title="ACCOUNT">
+              <Logo src="/logo192.png" />
+            </Tooltip>
           </li>
         </Listing>
         {UserMenuVisible ? (
-          <UserMenu>
+          <UserMenu onMouseLeave={() => setUserMenuVisible(false)}>
             <Button
               variant="contained"
               color="primary"
@@ -460,21 +548,38 @@ const Dashboard = (props) => {
                 marginBottom: "10px",
               }}
             >
-              <p> Explore upgrade options</p>
+              <Link to="/plans">
+                <p> Explore upgrade options</p>
+              </Link>
             </Button>
             <Logo src="logo.jpg" />
             <MidTextnav>{userdata.Email}</MidTextnav>
             <UserListing>
               <li>
-                <SettingsIcon fontSize="small" size={12} />
-                settings
+                <Link to="/settings">
+                  <SettingsIcon
+                    fontSize="small"
+                    size={12}
+                    style={{ marginRight: "3px" }}
+                  />
+                  settings
+                </Link>
               </li>
               <li>
-                <PowerSettingsNewIcon fontSize="small" size={12} /> lorem
+                <SystemUpdateAltIcon
+                  fontSize="small"
+                  size={12}
+                  style={{ marginRight: "3px" }}
+                />{" "}
+                download Notes App
               </li>
-              <li>lorem</li>
+
               <li onClick={handleLogout}>
-                <PowerSettingsNewIcon fontSize="small" size={12} />
+                <PowerSettingsNewIcon
+                  fontSize="small"
+                  size={12}
+                  style={{ marginRight: "3px" }}
+                />
                 logout
               </li>
             </UserListing>

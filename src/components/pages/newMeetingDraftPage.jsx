@@ -13,6 +13,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
+import { DraftRawContent } from "./draftRawContent";
 
 const Container = styled.div`
   width: 100%;
@@ -55,7 +56,8 @@ const IconDivsHeader = styled.div`
   }
 `;
 
-const NewDraftPage = (props) => {
+const NewMeetingDraftPage = (props) => {
+  const { notes, handleClickOpen, setNotesectionsVisoble } = props;
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const [titles, setTitles] = useState("");
@@ -64,6 +66,7 @@ const NewDraftPage = (props) => {
   const [state, setState] = useState({
     editorState: EditorState.createEmpty(),
   });
+  const draftrawContent = null;
 
   const onEditorStateChange = (editorState) => {
     setState({
@@ -74,6 +77,7 @@ const NewDraftPage = (props) => {
   const HandleSaveNote = () => {
     setSaving(true);
     const contentState = state.editorState.getCurrentContent();
+
     const rawContent = JSON.stringify(convertToRaw(contentState));
     console.log(rawContent);
     const title = titles || "untitled";
@@ -120,6 +124,15 @@ const NewDraftPage = (props) => {
   //   });
   //   setTitle(notes.title);
   // }, [notes]);
+
+  useEffect(() => {
+    const contentState = convertFromRaw(DraftRawContent);
+    console.log(contentState);
+    const editorState = EditorState.createWithContent(contentState);
+    setState({
+      editorState,
+    });
+  }, []);
   return (
     <Container>
       <EditNoteHeader>
@@ -194,4 +207,4 @@ const NewDraftPage = (props) => {
   );
 };
 
-export default NewDraftPage;
+export default NewMeetingDraftPage;

@@ -6,6 +6,7 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
 import ClearIcon from "@material-ui/icons/Clear";
+import { useDispatch, useSelector } from "react-redux";
 
 const Nav = styled.nav`
   background-color: white;
@@ -175,6 +176,8 @@ const Listing = styled.ul`
 `;
 const NavBar = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const CurrentUser = useSelector((state) => state.user.currentUser);
+  const userdata = CurrentUser && CurrentUser.userdata;
 
   const handleOpenSideBar = () => {
     setSidebarVisible(!sidebarVisible);
@@ -185,7 +188,6 @@ const NavBar = () => {
       {sidebarVisible ? <Filter onClick={handleOpenSideBar} /> : null}
       <Div>
         <Link to="/">
-          {" "}
           <Logo src="./logo.jpg" />
         </Link>
         <BigTextnav>WHY NOTES </BigTextnav>
@@ -199,7 +201,11 @@ const NavBar = () => {
       <Div>
         <MidTextnav>Help</MidTextnav>
         <MidTextnav>
-          <Link to="/Login">Login </Link>
+          {!CurrentUser ? (
+            <Link to="/Login">Login </Link>
+          ) : (
+            <Link to="/">{userdata.Email}</Link>
+          )}
         </MidTextnav>
         <Buttons
           style={{ ...ButtonsStyle, width: "100px" }}
@@ -234,7 +240,11 @@ const NavBar = () => {
               PLANS <ArrowDropDownIcon size={14} />
             </li>
             <li>
-              PLANS <ArrowDropDownIcon size={14} />
+              {!CurrentUser ? (
+                <Link to="/Login">Login </Link>
+              ) : (
+                <Link to="/">{userdata.Email}</Link>
+              )}
             </li>
           </Listing>
           <br />

@@ -190,7 +190,9 @@ const NavBar = () => {
         <Link to="/">
           <Logo src="./logo.jpg" />
         </Link>
-        <BigTextnav>WHY NOTES </BigTextnav>
+        <Link to="/WHYNOTES">
+          <BigTextnav>WHY NOTES </BigTextnav>
+        </Link>
         <BigTextnav>
           FEATURES <ArrowDropDownIcon size={14} />
         </BigTextnav>

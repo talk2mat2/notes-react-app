@@ -7,6 +7,7 @@ const Footer = styled.footer`
   background-color: white;
   min-height: 200px;
   // width: 80vw;
+  padding: 10px;
 
   display: flex;
   flex-direction: column;
@@ -203,7 +204,7 @@ const Footers = () => {
       <DividerBottom />
       <Bottomdiv>
         <SmallTextfoot>2021 All Rights Reserved</SmallTextfoot>
-        <SmallTextfoot>Privacy</SmallTextfoot>
+        <SmallTextfoot>Privacy policy</SmallTextfoot>
       </Bottomdiv>
     </Footer>
   );

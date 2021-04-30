@@ -15,14 +15,20 @@ import Error404 from "./components/pages/404";
 import { useEffect } from "react";
 
 import SettingsPage from "./components/pages/Settings";
+import WhyNotes from "./components/whynotes";
 
 const GlobalStyle = createGlobalStyle`
   body {
   background-color:#ffff;
+box-sizing:border-box;
 
+    // font-family: Arial, Helvetica, sans-serif;
+    font-family: "Soleil", Helvetica, Arial, sans-serif;
+  
 
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
+   
+    font-size: 16px;
+
 
 
   }
@@ -31,6 +37,7 @@ const GlobalStyle = createGlobalStyle`
     li{
       list-style:none;
     }
+    
 `;
 
 function App() {
@@ -54,6 +61,9 @@ function App() {
 
         <Route exact path="/plans">
           <Plans />
+        </Route>
+        <Route exact path="/WHYNOTES">
+          <WhyNotes />
         </Route>
         <Route
           path="/Login"

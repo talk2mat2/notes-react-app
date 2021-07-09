@@ -195,7 +195,9 @@ const MainLanging = () => {
   return (
     <Container>
       <BigText>Archieve More With Notes</BigText>
-      <MidTextMain>save your best moments </MidTextMain>
+      <MidTextMain>
+        Save your best moments and also retrieve them fast{" "}
+      </MidTextMain>
       <SmallTextnav>
         <Link to="/Login">Already have an account? sign in</Link>
       </SmallTextnav>

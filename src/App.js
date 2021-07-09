@@ -16,14 +16,22 @@ import { useEffect } from "react";
 
 import SettingsPage from "./components/pages/Settings";
 import WhyNotes from "./components/whynotes";
+import Checkout from "./components/pages/enterCard";
+import PlansUpgrade from "./components/pages/plans_upgrade";
+import AlmostThere from "./components/pages/almostThere";
 
 const GlobalStyle = createGlobalStyle`
   body {
   background-color:#ffff;
 box-sizing:border-box;
 
-    // font-family: Arial, Helvetica, sans-serif;
-    font-family: "Soleil", Helvetica, Arial, sans-serif;
+    //font-family: Arial, Helvetica, sans-serif;
+     font-family: 'Trebuchet MS', sans-serif;
+  
+    
+    
+}
+    
   
 
    
@@ -77,6 +85,15 @@ function App() {
         </Route> */}
         <Route path="/settings">
           <SettingsPage />
+        </Route>
+        <Route path="/PlansUpgrade">
+          <PlansUpgrade />
+        </Route>
+        <Route path="/almost_there">
+          <AlmostThere />
+        </Route>
+        <Route path="/checkout">
+          <Checkout />
         </Route>
         <Route>
           <Error404 />

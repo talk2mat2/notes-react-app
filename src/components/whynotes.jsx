@@ -6,6 +6,7 @@ import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import PermMediaIcon from "@material-ui/icons/PermMedia";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
+import Footers from "./pages/footer";
 import SwiperCore, {
   Navigation,
   Pagination,
@@ -31,6 +32,15 @@ SwiperCore.use([Navigation, Pagination, A11y, Autoplay, EffectFade]);
 
 const BigText = styled.p`
   font-size: 60px;
+  color: black;
+  font-weight: 600;
+  @media (max-width: 1100px) {
+    font-size: 40px;
+  }
+`;
+const Pbig = styled.p`
+  font-size: 25px;
+  line-spacing: 2px;
   color: black;
   font-weight: 600;
   @media (max-width: 1100px) {
@@ -89,29 +99,39 @@ const SmallTextnav2 = styled.p`
   }
 `;
 const Ptitle = styled.p`
-  font-family: "Soleil_Bold", Helvetica, Arial, sans-serif;
+  // font-family: "Soleil_Bold", Helvetica, Arial, sans-serif;
   font-size: 25px;
   letter-spacing: 1px;
   line-height: 150%;
 `;
 const Psmall = styled.p`
-  font-size: 17px;
+  font-size: 16px;
+
+  font-weight: 400;
   letter-spacing: 1px;
-  font-family: "Soleil_Bold", Helvetica, Arial, sans-serif;
+
+  // color: rgb(94, 94, 94);
+
+  // font-size: 17px;
+  // letter-spacing: 1.2px;
+  // // font-family: "Soleil_Bold", Helvetica, Arial, sans-serif;
+  // // font-family: "Soleil_Medium", Helvetica, Arial, sans-serif;
 `;
 const H3 = styled.h3`
-  font-family: "Soleil_Medium", Helvetica, Arial, sans-serif;
-  font-size: 20px;
+  // font-family: "Soleil_Medium", Helvetica, Arial, sans-serif;
+  font-size: 28px;
+  letter-spacing: 1.5px;
   line-height: 150%;
   font-weight: 550;
 `;
-const H4 = styled.h3`
-  font-family: "Soleil_Medium", Helvetica, Arial, sans-serif;
-  font-size: 28px;
+const H4 = styled.h4`
+  // font-family: "Soleil_Medium", Helvetica, Arial, sans-serif;
+  font-size: 20px;
   line-height: 150%;
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: 2px;
 `;
-const H2 = styled.h3`
+const H2 = styled.h2`
   font-family: "Soleil_Medium", Helvetica, Arial, sans-serif;
   font-size: 44px;
   line-height: 150%;
@@ -210,8 +230,10 @@ const CardSection1 = styled.div`
 `;
 const FeaturesCard = styled.div`
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  height: 320px;
-  width: 250px;
+  height: 300px;
+  width: 280px;
+  padding: 10px;
+  box-sizing: border-box;
   border-radius: 5px;
   margin: 10px;
 `;
@@ -224,7 +246,7 @@ const WhyNotes = () => {
 
       <Container>
         <BigText>Why To Choose Notes</BigText>
-        <H3>
+        <H4>
           Although the terms and "information" are often used interchangeably,
           <br />
           these terms have distinct meanings. In some popular publications,
@@ -232,7 +254,7 @@ const WhyNotes = () => {
           <br />
           are sometimes said to be transformed into,
           <br />
-        </H3>
+        </H4>
 
         <Button
           onClick={() => history.push("/plans")}
@@ -246,9 +268,12 @@ const WhyNotes = () => {
           <FeaturesCard>
             <NoteAddIcon
               fontSize="large"
-              style={{ color: "green", fontSize: "60px" }}
+              style={{
+                color: "green",
+                fontSize: "60px",
+              }}
             />
-            <h3>Transform Into</h3>
+            <H3>Transform Into</H3>
             <Psmall>
               Although the terms "data" and "information" are often used
               interchangeably, Although the terms "data" and "information" are
@@ -260,11 +285,10 @@ const WhyNotes = () => {
               fontSize="large"
               style={{ color: "green", fontSize: "60px" }}
             />
-            <h3>Transform Into</h3>
+            <H3>Transform Into</H3>
             <Psmall>
-              Although the terms "data" and "information" are often used
-              interchangeably, Although the terms "data" and "information" are
-              often used interchangeably,
+              Al, Although the terms "data" and "information" are often used
+              interchangeably,
             </Psmall>
           </FeaturesCard>
           <FeaturesCard>
@@ -272,23 +296,21 @@ const WhyNotes = () => {
               fontSize="large"
               style={{ color: "green", fontSize: "60px" }}
             />
-            <h3>Transform Into</h3>
+            <H3>Transform Into</H3>
             <Psmall>
-              Although the terms "data" and "information" are often used
-              interchangeably, Although the terms "data" and "information" are
-              often used interchangeably,
+              nformation" are often used interchangeably, Although the terms
+              "data" and "information" are often used interchangeably,
             </Psmall>
           </FeaturesCard>
           <FeaturesCard>
             <PermMediaIcon
               fontSize="large"
-              style={{ color: "green", fontSize: "60px" }}
+              style={{ color: "rgb(34, 139, 34)", fontSize: "60px" }}
             />
-            <h3>Transform Into</h3>
+            <H3>Transform Into</H3>
             <Psmall>
-              Although the terms "data" and "information" are often used
-              interchangeably, Although the terms "data" and "information" are
-              often used interchangeably,
+              information" are often used interchangeably, Although the terms
+              "data" and "information" are often used interchangeably,
             </Psmall>
           </FeaturesCard>
         </CardSection1>
@@ -381,6 +403,7 @@ const WhyNotes = () => {
             </SwiperSlide>
           </Swiper>
         </Reviews>
+        <Footers />
       </Container>
     </>
   );

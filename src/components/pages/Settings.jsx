@@ -4,6 +4,7 @@ import NavBar from "../Navbar";
 import PlansStepper from "../PlansStepper";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Container = styled.div`
   background-color: #ffffff;
   //   background-color: #cfe8fc;
@@ -72,18 +73,24 @@ const Listing = styled.ul`
     margin: 10px;
   }
 `;
+const AccountSection = styled.div`
+  min-height: 300px;
+  background-color: rgb(247, 252, 252);
+  width: 100%;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+`;
 const Buttons = styled(Button)`
   min-width: 100px;
   height: 30px;
+  text-align: center;
 
   && {
-   
-
     color: green;
-   
-   
+  }
 `;
 const SettingsPage = () => {
+  const CurrentUser = useSelector((state) => state.user.currentUser);
+  const userdata = CurrentUser && CurrentUser.userdata;
   return (
     <>
       <NavBar />
@@ -118,18 +125,42 @@ const SettingsPage = () => {
                 <Link to="/plans"> Explore all features</Link>
               </li>
             </Listing>
-            <Buttons
-              variant="outlined"
-              color="primary "
-              style={{
-                backgroundColor: "green",
-                color: "white",
-                justifySelf: "flex-end",
-              }}
-            >
-              <small style={{ fontSize: "10px" }}>Upgrade</small>
-            </Buttons>
+
+            <Link to="/PlansUpgrade">
+              <button
+                style={{
+                  backgroundColor: "green",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "9px",
+                  cursor: "pointer",
+                }}
+              >
+                upgrade
+              </button>
+            </Link>
           </ListingContainer>
+          <Marging />
+          <AccountSection>
+            <Listing style={{ width: "300px" }}>
+              <li className="verticalCenterRowSpaceBetween">
+                <b>Account Level</b>
+                <p>{userdata.plans}</p>
+              </li>
+              <li className="verticalCenterRowSpaceBetween">
+                <b>Email</b>
+                <p>{userdata.Email}</p>
+              </li>
+              <li className="verticalCenterRowSpaceBetween">
+                <b>Member Since</b>
+                <p>null</p>
+              </li>
+              <li className="verticalCenterRowSpaceBetween">
+                <b>Monthlu Usage</b>
+                <p>null</p>
+              </li>
+            </Listing>
+          </AccountSection>
         </Section>
       </Container>
     </>

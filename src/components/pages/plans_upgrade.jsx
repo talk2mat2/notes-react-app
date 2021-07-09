@@ -8,6 +8,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import StarIcon from "@material-ui/icons/Star";
 import FlareIcon from "@material-ui/icons/Flare";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   min-height: 300px;
@@ -100,12 +101,17 @@ const Listing = styled.ul`
   }
 `;
 const MidText = styled.p``;
-const Plans = () => {
+const PlansUpgrade = () => {
+  const CurrentUser = useSelector((state) => state.user.currentUser);
+  const userdata = CurrentUser && CurrentUser.userdata;
   return (
     <>
       <NavBar />
       <Container>
-        <BigText>Which notes plan is the best for you</BigText>
+        <BigText style={{ fontSize: "40px" }}>
+          We've got affordable Notes plans for <br />
+          you in every level
+        </BigText>
         <PlansSection>
           <Flexcards>
             <Listing>
@@ -141,13 +147,14 @@ const Plans = () => {
                 <CheckIcon size={15} /> great notes"Lorem{" "}
               </li>
             </Listing>
-            <Link to="/login/signup">
+            <Link>
               <Buttons
+                disabled={userdata.plans === "basic"}
                 variant="outlined"
                 color="primary "
                 style={{ backgroundColor: "white", color: "green" }}
               >
-                Get started
+                {userdata.plans === "basic" ? "Current Plan" : "free plan"}
               </Buttons>
             </Link>
           </Flexcards>
@@ -189,13 +196,19 @@ const Plans = () => {
                 <CheckIcon size={15} /> great notes"Lorem{" "}
               </li>
             </Listing>
-            <Link to="/login/signup">
+            <Link
+              to={{ pathname: "/almost_there", state: { plans: "premium" } }}
+            >
               <Buttons
                 variant="outlined"
                 color="primary "
                 style={{ backgroundColor: "green", color: "white" }}
               >
-                Get started
+                {userdata.plans === "premium" ? (
+                  "Current Plan"
+                ) : (
+                  <small>Upgrade to Premium</small>
+                )}
               </Buttons>
             </Link>
           </Flexcards>
@@ -238,13 +251,19 @@ const Plans = () => {
               </li>
             </Listing>
 
-            <Link to="/login/signup">
+            <Link
+              to={{ pathname: "/almost_there", state: { plans: "business" } }}
+            >
               <Buttons
                 variant="outlined"
                 color="primary "
                 style={{ backgroundColor: "green", color: "white" }}
               >
-                Get started
+                {userdata.plans === "business" ? (
+                  "Current Plan"
+                ) : (
+                  <small>Upgrade to business</small>
+                )}
               </Buttons>
             </Link>
           </Flexcards>
@@ -255,4 +274,4 @@ const Plans = () => {
   );
 };
 
-export default Plans;
+export default PlansUpgrade;

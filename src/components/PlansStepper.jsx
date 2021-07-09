@@ -74,9 +74,11 @@ const PlansStepper = () => {
         <PackageContainer>
           <BigText>BASIC </BigText>
         </PackageContainer>
+        <div style={{ width: "5px" }}></div>
         <PackageContainer>
-          <BigText>PREMIUM </BigText>
+          <BigText> PREMIUM </BigText>
         </PackageContainer>
+        <div style={{ width: "2px" }}></div>
         <PackageContainer>
           <BigText>BUSINESS</BigText>
         </PackageContainer>
